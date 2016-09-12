@@ -1,10 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MahjongYakuBot;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MahjongYakuBot.Tests
 {
@@ -48,10 +43,10 @@ namespace MahjongYakuBot.Tests
         {
             var te = new Te();
             te.Janto = new List<Pai>{Sangenpai.Hatsu, Sangenpai.Hatsu};
-            te.Kotsu.Add(new List<Pai> { Fonpai.Ton, Fonpai.Ton, Fonpai.Ton });
-            te.Kotsu.Add(new List<Pai> { Fonpai.Nan, Fonpai.Nan, Fonpai.Nan });
-            te.Kotsu.Add(new List<Pai> { Fonpai.Sha, Fonpai.Sha, Fonpai.Sha });
-            te.Kotsu.Add(new List<Pai> { Fonpai.Pe, Fonpai.Pe, Fonpai.Pe });
+            te.Kotsus.Add(new Mentsu(Fonpai.Ton, Fonpai.Ton, Fonpai.Ton));
+            te.Kotsus.Add(new Mentsu(Fonpai.Nan, Fonpai.Nan, Fonpai.Nan));
+            te.Kotsus.Add(new Mentsu(Fonpai.Sha, Fonpai.Sha, Fonpai.Sha));
+            te.Kotsus.Add(new Mentsu(Fonpai.Pe, Fonpai.Pe, Fonpai.Pe));
 
             Assert.AreEqual(new DaiSuShi().Condition(te), true);
         }
@@ -61,12 +56,12 @@ namespace MahjongYakuBot.Tests
         {
             var te = new Te();
             te.Janto = new List<Pai> { Fonpai.Pe, Fonpai.Pe };
-            te.Kotsu.Add(new List<Pai> { Fonpai.Ton, Fonpai.Ton, Fonpai.Ton });
-            te.Kotsu.Add(new List<Pai> { Fonpai.Nan, Fonpai.Nan, Fonpai.Nan });
-            te.Kotsu.Add(new List<Pai> { Fonpai.Sha, Fonpai.Sha, Fonpai.Sha });
-            te.Kotsu.Add(new List<Pai> { Sangenpai.Hatsu, Sangenpai.Hatsu, Sangenpai.Hatsu });
+            te.Kotsus.Add(new Mentsu(Fonpai.Ton, Fonpai.Ton, Fonpai.Ton));
+            te.Kotsus.Add(new Mentsu(Fonpai.Nan, Fonpai.Nan, Fonpai.Nan));
+            te.Kotsus.Add(new Mentsu(Fonpai.Sha, Fonpai.Sha, Fonpai.Sha));
+            te.Kotsus.Add(new Mentsu(Sangenpai.Hatsu, Sangenpai.Hatsu, Sangenpai.Hatsu));
 
-            Assert.AreEqual(new DaiSuShi().Condition(te), true);
+            Assert.AreEqual(new SuShiHou().Condition(te), true);
         }
 
         [TestMethod]
@@ -74,18 +69,18 @@ namespace MahjongYakuBot.Tests
         {
             var te = new Te();
             te.Janto = new List<Pai> { Fonpai.Pe, Fonpai.Pe };
-            te.Kotsu.Add(new List<Pai> { Fonpai.Ton, Fonpai.Ton, Fonpai.Ton });
-            te.Kotsu.Add(new List<Pai> { Fonpai.Nan, Fonpai.Nan, Fonpai.Nan });
-            te.Kotsu.Add(new List<Pai> { Fonpai.Sha, Fonpai.Sha, Fonpai.Sha });
-            te.Kotsu.Add(new List<Pai> { Sangenpai.Hatsu, Sangenpai.Hatsu, Sangenpai.Hatsu });
+            te.Kotsus.Add(new Mentsu(Fonpai.Ton, Fonpai.Ton, Fonpai.Ton));
+            te.Kotsus.Add(new Mentsu(Fonpai.Nan, Fonpai.Nan, Fonpai.Nan));
+            te.Kotsus.Add(new Mentsu(Fonpai.Sha, Fonpai.Sha, Fonpai.Sha));
+            te.Kotsus.Add(new Mentsu(Sangenpai.Hatsu, Sangenpai.Hatsu, Sangenpai.Hatsu));
             te.AgariPai = Fonpai.Ton;
             te.Tsumo = true;
 
-            Assert.AreEqual(new SuAnkou().Condition(te), true);
+            Assert.AreEqual(new SuAnko().Condition(te), true);
 
             te.AgariPai = Fonpai.Pe;
-            Assert.AreNotEqual(new SuAnkou().Condition(te), true);
-            Assert.AreEqual(new SuAnkouTanki().Condition(te), true);
+            Assert.AreNotEqual(new SuAnko().Condition(te), true);
+            Assert.AreEqual(new SuAnkoTanki().Condition(te), true);
         }
 
         [TestMethod]
@@ -93,14 +88,14 @@ namespace MahjongYakuBot.Tests
         {
             var te = new Te();
             te.Janto = new List<Pai> { Fonpai.Pe, Fonpai.Pe };
-            te.Kotsu.Add(new List<Pai> { Fonpai.Ton, Fonpai.Ton, Fonpai.Ton });
-            te.Kotsu.Add(new List<Pai> { Fonpai.Nan, Fonpai.Nan, Fonpai.Nan });
-            te.Kotsu.Add(new List<Pai> { Fonpai.Sha, Fonpai.Sha, Fonpai.Sha });
-            te.Kotsu.Add(new List<Pai> { Sangenpai.Hatsu, Sangenpai.Hatsu, Sangenpai.Hatsu });
+            te.Kotsus.Add(new Mentsu(Fonpai.Ton, Fonpai.Ton, Fonpai.Ton));
+            te.Kotsus.Add(new Mentsu(Fonpai.Nan, Fonpai.Nan, Fonpai.Nan));
+            te.Kotsus.Add(new Mentsu(Fonpai.Sha, Fonpai.Sha, Fonpai.Sha));
+            te.Kotsus.Add(new Mentsu(Sangenpai.Hatsu, Sangenpai.Hatsu, Sangenpai.Hatsu));
             te.AgariPai = Fonpai.Pe;
             te.Tsumo = true;
 
-            Assert.AreEqual(new SuAnkouTanki().Condition(te), true);
+            Assert.AreEqual(new SuAnkoTanki().Condition(te), true);
         }
 
         [TestMethod]
@@ -108,14 +103,114 @@ namespace MahjongYakuBot.Tests
         {
             var te = new Te();
             te.Janto = new List<Pai> { Manzu.One, Manzu.One };
-            te.Kotsu.Add(new List<Pai> { Manzu.Two, Manzu.Two, Manzu.Two });
-            te.Kotsu.Add(new List<Pai> { Manzu.Three, Manzu.Three, Manzu.Three });
-            te.Kotsu.Add(new List<Pai> { Manzu.Four, Manzu.Four, Manzu.Four });
-            te.Kotsu.Add(new List<Pai> { Manzu.Five, Manzu.Five, Manzu.Five });
+            te.Kotsus.Add(new Mentsu(Manzu.Two, Manzu.Two, Manzu.Two));
+            te.Kotsus.Add(new Mentsu(Manzu.Three, Manzu.Three, Manzu.Three));
+            te.Kotsus.Add(new Mentsu(Manzu.Four, Manzu.Four, Manzu.Four));
+            te.Kotsus.Add(new Mentsu(Manzu.Five, Manzu.Five, Manzu.Five));
             te.AgariPai = Manzu.Five;
             te.Tsumo = true;
 
             Assert.AreEqual(new ChinItsu().Condition(te), true);
         }
+
+        [TestMethod]
+        public void TeIs小三元()
+        {
+            var te = new Te();
+            te.Janto = new List<Pai> { Sangenpai.Chun, Sangenpai.Chun };
+            te.Kotsus.Add(new Mentsu(Fonpai.Ton, Fonpai.Ton, Fonpai.Ton));
+            te.Kotsus.Add(new Mentsu(Fonpai.Nan, Fonpai.Nan, Fonpai.Nan));
+            te.Kotsus.Add(new Mentsu(Sangenpai.Haku, Sangenpai.Haku, Sangenpai.Haku));
+            te.Kotsus.Add(new Mentsu(Sangenpai.Hatsu, Sangenpai.Hatsu, Sangenpai.Hatsu));
+            te.AgariPai = Fonpai.Ton;
+            te.Tsumo = true;
+
+            Assert.AreEqual(new ShouSangen().Condition(te), true);
+        }
+
+        [TestMethod]
+        public void TeIs三色同刻()
+        {
+            var te = new Te();
+            te.Janto = new List<Pai> { Sangenpai.Chun, Sangenpai.Chun };
+            te.Kotsus.Add(new Mentsu(Manzu.Two, Manzu.Two, Manzu.Two));
+            te.Kotsus.Add(new Mentsu(Pinzu.Two, Pinzu.Two, Pinzu.Two));
+            te.Kotsus.Add(new Mentsu(Souzu.Two, Souzu.Two, Souzu.Two));
+            te.Kotsus.Add(new Mentsu(Manzu.Five, Manzu.Five, Manzu.Five));
+            te.AgariPai = Manzu.Five;
+            te.Tsumo = true;
+
+            Assert.AreEqual(new SanShokuDouKou().Condition(te), true);
+        }
+
+        [TestMethod]
+        public void TeIs一気通貫()
+        {
+            var te = new Te();
+            te.Janto = new List<Pai> { Manzu.One, Manzu.One };
+            te.Shuntsus.Add(new Mentsu(Manzu.One, Manzu.Two, Manzu.Three));
+            te.Shuntsus.Add(new Mentsu(Manzu.Four, Manzu.Five, Manzu.Six));
+            te.Shuntsus.Add(new Mentsu(Manzu.Seven, Manzu.Eight, Manzu.Nine));
+            te.Shuntsus.Add(new Mentsu(Manzu.Five, Manzu.Five, Manzu.Five));
+            te.AgariPai = Manzu.One;
+            te.Tsumo = true;
+
+            Assert.AreEqual(new Ittsu().Condition(te), true);
+
+            te.Shuntsus[2] = new Mentsu(Souzu.Seven, Souzu.Eight, Souzu.Nine);
+
+            Assert.AreNotEqual(new Ittsu().Condition(te), true);
+
+            te.Shuntsus[3] = new Mentsu(Manzu.Seven, Manzu.Eight, Manzu.Nine);
+
+            Assert.AreEqual(new Ittsu().Condition(te), true);
+        }
+
+        [TestMethod]
+        public void TeIs二盃口()
+        {
+            var te = new Te();
+            te.Janto = new List<Pai> { Manzu.One, Manzu.One };
+            te.Shuntsus.Add(new Mentsu(Manzu.One, Manzu.Two, Manzu.Three));
+            te.Shuntsus.Add(new Mentsu(Manzu.One, Manzu.Two, Manzu.Three));
+            te.Shuntsus.Add(new Mentsu(Manzu.Seven, Manzu.Eight, Manzu.Nine));
+            te.Shuntsus.Add(new Mentsu(Manzu.Seven, Manzu.Eight, Manzu.Nine));
+            te.AgariPai = Manzu.One;
+            te.Tsumo = true;
+
+            Assert.AreEqual(new RyanPeiKou().Condition(te), true);
+        }
+
+        [TestMethod]
+        public void TeIs九蓮宝燈()
+        {
+            var te = new Te();
+            te.Janto = new List<Pai> { Manzu.Eight, Manzu.Eight };
+            te.Shuntsus.Add(new Mentsu(Manzu.Two, Manzu.Three, Manzu.Four));
+            te.Shuntsus.Add(new Mentsu(Manzu.Five, Manzu.Six, Manzu.Seven));
+            te.Kotsus.Add(new Mentsu(Manzu.One, Manzu.One, Manzu.One));
+            te.Kotsus.Add(new Mentsu(Manzu.Nine, Manzu.Nine, Manzu.Nine));
+            te.AgariPai = Manzu.Five;
+            te.Tsumo = true;
+
+            Assert.AreEqual(new ChuRen().Condition(te), true);
+        }
+
+        [TestMethod]
+        public void TeIs純正九蓮宝燈()
+        {
+            var te = new Te();
+            te.Janto = new List<Pai> { Manzu.Eight, Manzu.Eight };
+            te.Shuntsus.Add(new Mentsu(Manzu.Two, Manzu.Three, Manzu.Four));
+            te.Shuntsus.Add(new Mentsu(Manzu.Five, Manzu.Six, Manzu.Seven));
+            te.Kotsus.Add(new Mentsu(Manzu.One, Manzu.One, Manzu.One));
+            te.Kotsus.Add(new Mentsu(Manzu.Nine, Manzu.Nine, Manzu.Nine));
+            te.AgariPai = Manzu.One;
+            te.Tsumo = true;
+
+            Assert.AreEqual(new JunSeiChuRen().Condition(te), true);
+        }
+
+
     }
 }

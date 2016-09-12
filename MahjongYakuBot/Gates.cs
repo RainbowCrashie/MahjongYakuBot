@@ -63,14 +63,7 @@ namespace MahjongYakuBot
 
             return true;
         }
-
-
-        public static bool IsChunChanPai(Pai pai)
-            => pai.Number == 1 || pai.Number == 9;
-
-        public static bool IsRouTouPai(Pai pai)
-            => !IsChunChanPai(pai);
-
+        
         /// <summary>
         /// pinzu, manzu, souzu, sangenpai, fonpai
         /// </summary>

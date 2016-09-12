@@ -21,21 +21,31 @@ namespace MahjongYakuBot
             if (!(obj is Pai))
                 throw new ArgumentException();
 
-            return PaiCategoryOrder.List.IndexOf(this.GetType()).CompareTo(PaiCategoryOrder.List.IndexOf(obj.GetType()));
+            return 
+                PaiCategoryOrder.List.IndexOf(GetType())*100 + Number
+                .CompareTo(
+                PaiCategoryOrder.List.IndexOf(obj.GetType())*100 + Number
+                );
         }
 
         protected Pai GetDora(List<Pai> all, int baseNumber)
         {
-            var jibun = this.Number;
+            var jibun = Number;
             var doranum = baseNumber;
 
             if (jibun != baseNumber + all.Count - 1)
-                doranum += baseNumber - this.Number + 1;
+                doranum += baseNumber - Number + 1;
 
             return all.Where(p => p.Number == doranum).Select(p => p).First();
         }
 
         public abstract Pai Dora { get; }
+
+        public bool IsRouTouPai()
+            => Number == 1 || Number == 9;
+
+        public bool IsChunChanPai()
+            => !IsRouTouPai();
     }
 
     public abstract class PaiList : List<Pai>

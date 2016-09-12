@@ -5,26 +5,23 @@ namespace MahjongYakuBot
 {
     public class Houra
     {
+        
         public static Te Hora(List<Pai> te)
         {
-            var resultTe = new Te();
             te = Sort(te);
+
+            var resultTe = new Te();
             
             for (int jan = 0; jan < 13; jan++)
             {
                 for (int kotsuFirst = 0; kotsuFirst < 2; kotsuFirst++)
                 {
                     var janto = new List<Pai>();
-                    var kotsu = new List<List<Pai>>();
-                    var shuntsu = new List<List<Pai>>();
-
-                    //Copy List
+                    var kotsu = new List<Mentsu>();
+                    var shuntsu = new List<Mentsu>();
+                    
                     var possibleYaku = new List<Pai>();
-                    foreach (var pai in te)
-                    {
-                        possibleYaku.Add(
-                            AllPaiList.List.Where(p => p.Number == pai.Number).First());
-                    }
+                    possibleYaku.AddRange(te);
                     
                     if(!Gates.IsToitsu(possibleYaku[jan], possibleYaku[jan + 1]))
                         break;
@@ -52,15 +49,15 @@ namespace MahjongYakuBot
                         continue;
 
                     resultTe.Janto = janto;
-                    resultTe.Kotsu = kotsu;
-                    resultTe.Shuntsu = shuntsu;
+                    resultTe.Kotsus = kotsu;
+                    resultTe.Shuntsus = shuntsu;
                 }
             }
 
             return resultTe;
         }
-
-        public static void SearchKotsu(List<Pai> possibleYaku, List<List<Pai>> kotsu)
+        
+        public static void SearchKotsu(List<Pai> possibleYaku, List<Mentsu> kotsu)
         {
             for (int kou = 0; kou < possibleYaku.Count;)
             {
@@ -70,7 +67,7 @@ namespace MahjongYakuBot
                     continue;
                 }
 
-                kotsu.Add(new List<Pai> { possibleYaku[kou], possibleYaku[kou + 1], possibleYaku[kou + 2] });
+                kotsu.Add(new Mentsu(possibleYaku[kou], possibleYaku[kou + 1], possibleYaku[kou + 2]));
 
                 possibleYaku.RemoveAt(kou);
                 possibleYaku.RemoveAt(kou);
@@ -78,7 +75,7 @@ namespace MahjongYakuBot
             }
         }
 
-        public static void SearchShuntsu(List<Pai> possibleYaku, List<List<Pai>> shuntsu)
+        public static void SearchShuntsu(List<Pai> possibleYaku, List<Mentsu> shuntsu)
         {
             for (int jun = 0; jun < possibleYaku.Count;)
             {
@@ -88,7 +85,7 @@ namespace MahjongYakuBot
                     continue;
                 }
 
-                shuntsu.Add(new List<Pai> { possibleYaku[jun], possibleYaku[jun + 1], possibleYaku[jun + 2] });
+                shuntsu.Add(new Mentsu(possibleYaku[jun], possibleYaku[jun + 1], possibleYaku[jun + 2]));
 
                 possibleYaku.RemoveAt(jun);
                 possibleYaku.RemoveAt(jun);
@@ -98,23 +95,26 @@ namespace MahjongYakuBot
 
         public static List<Pai> Sort(List<Pai> pais)
         {
-            return pais.OrderBy(pai => pai).ThenBy(pai => pai.Number).ToList();
+            return pais.OrderBy(pai => pai).ToList();
         }
         
     }
 
     public class Te
     {
-        public List<List<Pai>> Kotsu { get; set; }
-        public List<List<Pai>> Shuntsu { get; set; }
+        public List<Mentsu> Kotsus { get; set; }
+        public List<Mentsu> Shuntsus { get; set; }
         public List<Pai> Janto { get; set; }
         public Pai AgariPai { get; set; }
         public bool Tsumo { get; set; }
 
+        public Fonpai JiFu { get; set; }
+        public Fonpai BaFu { get; set; }
+
         public Te()
         {
-            Kotsu = new List<List<Pai>>();
-            Shuntsu = new List<List<Pai>>();
+            Kotsus = new List<Mentsu>();
+            Shuntsus = new List<Mentsu>();
             Janto = new List<Pai>();
         }
 
@@ -123,28 +123,50 @@ namespace MahjongYakuBot
             var pais = new List<Pai>();
             pais.AddRange(Janto);
 
-            foreach (var pailist in Shuntsu)
+            foreach (var pailist in Shuntsus)
             {
-                pais.AddRange(pailist);
+                pais.AddRange(pailist.Pais);
             }
 
-            foreach (var pailist in Kotsu)
+            foreach (var pailist in Kotsus)
             {
-                pais.AddRange(pailist);
+                pais.AddRange(pailist.Pais);
             }
+
+            pais.RemoveAll(pai => pai == null);
 
             return pais;
         }
 
-        public bool HazSpecificKotsu(Pai pai)
+        public bool IsMenzen()
         {
-            foreach (var pais in Kotsu)
-            {
-                if(pais[0] == pai)
-                    return true;
-            }
+            if (Shuntsus.Any(shuntsu => shuntsu.Kui))
+                return false;
 
-            return false;
+            return !Kotsus.Any(kotsu => kotsu.Kui);
+        }
+    }
+
+    public class Mentsu
+    {
+        public List<Pai> Pais { get; set; }
+        public bool Kui { get; set; }
+
+        public Mentsu()
+        {
+            Pais = new List<Pai>();
+            Kui = false;
+        }
+
+        public Mentsu(List<Pai> pais, bool kui = false)
+        {
+            Pais = pais;
+            Kui = kui;
+        }
+
+        public Mentsu(Pai pai1, Pai pai2, Pai pai3, Pai pai4 = null, bool kui = false)
+            : this(new List<Pai> {pai1, pai2, pai3, pai4}, kui)
+        {
         }
     }
 }
