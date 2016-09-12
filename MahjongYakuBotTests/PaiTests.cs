@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 
-namespace MahjongYakuBot.Tests
+namespace Mahjong.Tests
 {
     [TestClass()]
     public class PaiTests

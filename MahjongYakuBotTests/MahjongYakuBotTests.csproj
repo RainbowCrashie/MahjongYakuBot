@@ -55,9 +55,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MahjongYakuBot\MahjongYakuBot.csproj">
-      <Project>{4FC65615-2AE4-4FB9-89AC-65F783D973F4}</Project>
-      <Name>MahjongYakuBot</Name>
+    <ProjectReference Include="..\Mahjong\Mahjong.csproj">
+      <Project>{db750fba-bfab-4f94-bef3-92d58ef3688e}</Project>
+      <Name>Mahjong</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

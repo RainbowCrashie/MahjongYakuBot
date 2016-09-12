@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MahjongYakuBot
+namespace Mahjong
 {
     public abstract class Pai : StringEnum, IComparable
     {
