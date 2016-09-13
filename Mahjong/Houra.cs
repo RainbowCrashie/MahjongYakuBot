@@ -1,103 +1,179 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting;
 
 namespace Mahjong
 {
     public class Houra
     {
-        
-        public static Te Hora(List<Pai> te)
+        public static List<Yaku> CountYaku(Te te)
         {
-            te = Sort(te);
+            var yakumans = new List<Yaku>();
+            yakumans.AddRange(YakumanList.List);
 
-            var resultTe = new Te();
-            
-            for (int jan = 0; jan < 13; jan++)
+            yakumans.RemoveAll(yaku => !yaku.Condition(te));
+
+            if (yakumans.Count > 0)
+                return yakumans;
+
+            var yakus = new List<Yaku>();
+            yakus.AddRange(YakuList.List);
+
+            yakus.RemoveAll(yaku => !yaku.Condition(te));
+
+            return yakus;
+        }
+
+        private static readonly int[] Zeros = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+        private static int[] Analyze(List<Pai> pais)
+        {
+            var n = (int[])Zeros.Clone();
+
+            foreach (var pai in pais)
             {
-                for (int kotsuFirst = 0; kotsuFirst < 2; kotsuFirst++)
+                var id = pai.Number;
+
+                if (pai is Manzu)
+                    id -= 1;
+                if (pai is Pinzu)
+                    id += 8;
+                if (pai is Souzu)
+                    id += 17;
+                if (pai is Fonpai)
+                    id += 26;
+                if (pai is Sangenpai)
+                    id += 30;
+
+                n[id]++;
+            }
+
+            return n;
+        }
+
+        private static Pai PaiIdToPai(int id)
+        {
+            if (id < 9)
+                return ManzuList.List.First(pai => pai.Number == id + 1);
+            if (id < 18)
+                return PinzuList.List.First(pai => pai.Number == id - 8);
+            if (id < 27)
+                return SouzuList.List.First(pai => pai.Number == id - 17);
+            if (id < 31)
+                return FonpaiList.List.First(pai => pai.Number == id - 26);
+            
+            return SangenpaiList.List.First(pai => pai.Number == id - 30);
+        }
+
+        private static Mentsu PaiToKotsu(Pai pai)
+        {
+            return new Mentsu(pai, pai, pai);
+        }
+
+        private static Mentsu PaiToShuntsu(Pai pai)
+        {
+            return new Mentsu(pai, pai.Dora, pai.Dora.Dora);
+        }
+
+        public static List<Te> BackTrack(List<Pai> pais)
+        {
+            var resultTe = new List<Te>();
+
+            var paiCounted = Analyze(pais);
+
+            for (var jan = 0; jan < 34; jan++)
+            {
+                for (var kotsuFirst = 0; kotsuFirst < 2; kotsuFirst++)
                 {
                     var janto = new List<Pai>();
                     var kotsu = new List<Mentsu>();
                     var shuntsu = new List<Mentsu>();
-                    
-                    var possibleYaku = new List<Pai>();
-                    possibleYaku.AddRange(te);
-                    
-                    if(!Gates.IsToitsu(possibleYaku[jan], possibleYaku[jan + 1]))
-                        break;
 
-                    janto.Add(possibleYaku[jan]);
-                    janto.Add(possibleYaku[jan + 1]);
+                    var t = (int[])paiCounted.Clone();
+                    if (t[jan] < 2)
+                        continue;
 
-                    possibleYaku.RemoveAt(jan);
-                    possibleYaku.RemoveAt(jan);
+                    t[jan] -= 2;
+                    janto.Add(PaiIdToPai(jan));
+                    janto.Add(PaiIdToPai(jan));
 
                     if (kotsuFirst == 0)
                     {
-                        SearchKotsu(possibleYaku, kotsu);
+                        for (var k = 0; k < 34; k++)
+                        {
+                            if (t[k] < 3)
+                                continue;
 
-                        SearchShuntsu(possibleYaku, shuntsu);
+                            t[k] -= 3;
+                            kotsu.Add(PaiToKotsu(PaiIdToPai(k)));
+                        }
+
+                        for (var a = 0; a < 3; a++)
+                        {
+                            for (var b = 0; b < 7;)
+                            {
+                                if (t[9*a + b] >= 1 &&
+                                    t[9*a + b + 1] >= 1 &&
+                                    t[9*a + b + 2] >= 1)
+                                {
+                                    t[9*a + b]--;
+                                    t[9*a + b + 1]--;
+                                    t[9*a + b + 2]--;
+                                    shuntsu.Add(PaiToShuntsu(PaiIdToPai(9*a + b)));
+                                }
+                                else
+                                {
+                                    b++;
+                                }
+                            }
+                        }
                     }
                     else
                     {
-                        SearchShuntsu(possibleYaku, shuntsu);
+                        for (var a = 0; a < 3; a++)
+                        {
+                            for (var b = 0; b < 7;)
+                            {
+                                if (t[9 * a + b] >= 1 &&
+                                    t[9 * a + b + 1] >= 1 &&
+                                    t[9 * a + b + 2] >= 1)
+                                {
+                                    t[9 * a + b]--;
+                                    t[9 * a + b + 1]--;
+                                    t[9 * a + b + 2]--;
+                                    shuntsu.Add(PaiToShuntsu(PaiIdToPai(9 * a + b)));
+                                }
+                                else
+                                {
+                                    b++;
+                                }
+                            }
+                        }
 
-                        SearchKotsu(possibleYaku, kotsu);
+                        for (var k = 0; k < 34; k++)
+                        {
+                            if (t[k] < 3)
+                                continue;
+
+                            t[k] -= 3;
+                            kotsu.Add(PaiToKotsu(PaiIdToPai(k)));
+                        }
                     }
 
-                    if (possibleYaku.Count != 0)
-                        continue;
-
-                    resultTe.Janto = janto;
-                    resultTe.Kotsus = kotsu;
-                    resultTe.Shuntsus = shuntsu;
+                    if (t.All(count => count == 0))
+                    {
+                        resultTe.Add(new Te{ Janto = janto, Kotsus = kotsu, Shuntsus = shuntsu });
+                    }
                 }
             }
 
             return resultTe;
         }
-        
-        public static void SearchKotsu(List<Pai> possibleYaku, List<Mentsu> kotsu)
-        {
-            for (int kou = 0; kou < possibleYaku.Count;)
-            {
-                if (!Gates.IsKoutsu(possibleYaku[kou], possibleYaku[kou + 1], possibleYaku[kou + 2]))
-                {
-                    kou += 3;
-                    continue;
-                }
-
-                kotsu.Add(new Mentsu(possibleYaku[kou], possibleYaku[kou + 1], possibleYaku[kou + 2]));
-
-                possibleYaku.RemoveAt(kou);
-                possibleYaku.RemoveAt(kou);
-                possibleYaku.RemoveAt(kou);
-            }
-        }
-
-        public static void SearchShuntsu(List<Pai> possibleYaku, List<Mentsu> shuntsu)
-        {
-            for (int jun = 0; jun < possibleYaku.Count;)
-            {
-                if (!Gates.IsJuntsu(possibleYaku[jun], possibleYaku[jun + 1], possibleYaku[jun + 2]))
-                {
-                    jun += 3;
-                    continue;
-                }
-
-                shuntsu.Add(new Mentsu(possibleYaku[jun], possibleYaku[jun + 1], possibleYaku[jun + 2]));
-
-                possibleYaku.RemoveAt(jun);
-                possibleYaku.RemoveAt(jun);
-                possibleYaku.RemoveAt(jun);
-            }
-        }
 
         public static List<Pai> Sort(List<Pai> pais)
         {
-            return pais.OrderBy(pai => pai).ToList();
+            return pais.OrderBy(pai => pai).ThenBy(pai => pai.Number).ToList();
         }
-        
     }
 
     public class Te
@@ -108,6 +184,8 @@ namespace Mahjong
         public Pai AgariPai { get; set; }
         public bool Tsumo { get; set; }
 
+        public List<Pai> Doras { get; set; } 
+
         public Fonpai JiFu { get; set; }
         public Fonpai BaFu { get; set; }
 
@@ -116,6 +194,7 @@ namespace Mahjong
             Kotsus = new List<Mentsu>();
             Shuntsus = new List<Mentsu>();
             Janto = new List<Pai>();
+            Doras = new List<Pai>();
         }
 
         public List<Pai> AllPais()
@@ -136,6 +215,13 @@ namespace Mahjong
             pais.RemoveAll(pai => pai == null);
 
             return pais;
+        }
+
+        public void AddMentsus(Te te)
+        {
+            Janto = te.Janto;
+            Shuntsus.AddRange(te.Shuntsus);
+            Kotsus.AddRange(te.Kotsus);
         }
 
         public bool IsMenzen()

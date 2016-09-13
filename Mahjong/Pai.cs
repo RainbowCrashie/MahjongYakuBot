@@ -22,19 +22,20 @@ namespace Mahjong
                 throw new ArgumentException();
 
             return 
-                PaiCategoryOrder.List.IndexOf(GetType())*100 + Number
+                PaiCategoryOrder.List.IndexOf(GetType())
                 .CompareTo(
-                PaiCategoryOrder.List.IndexOf(obj.GetType())*100 + Number
+                PaiCategoryOrder.List.IndexOf(obj.GetType())
                 );
         }
 
-        protected Pai GetDora(List<Pai> all, int baseNumber)
+        protected Pai GetDora(List<Pai> all)
         {
             var jibun = Number;
-            var doranum = baseNumber;
 
-            if (jibun != baseNumber + all.Count - 1)
-                doranum += baseNumber - Number + 1;
+            var doranum = jibun + 1;
+
+            if (jibun == all.Count)
+                doranum = 1;
 
             return all.Where(p => p.Number == doranum).Select(p => p).First();
         }
@@ -42,7 +43,12 @@ namespace Mahjong
         public abstract Pai Dora { get; }
 
         public bool IsRouTouPai()
-            => Number == 1 || Number == 9;
+        {
+            if (this is Jihai)
+                return false;
+
+            return Number == 1 || Number == 9;
+        }
 
         public bool IsChunChanPai()
             => !IsRouTouPai();
@@ -126,7 +132,7 @@ namespace Mahjong
 
         public override Pai Dora
         {
-            get { return GetDora(ManzuList.List, 1); }
+            get { return GetDora(ManzuList.List); }
         }
     }
 
@@ -175,7 +181,7 @@ namespace Mahjong
 
         public override Pai Dora
         {
-            get { return GetDora(SouzuList.List, 1); }
+            get { return GetDora(SouzuList.List); }
         }
     }
 
@@ -224,7 +230,7 @@ namespace Mahjong
 
         public override Pai Dora
         {
-            get { return GetDora(PinzuList.List, 1); }
+            get { return GetDora(PinzuList.List); }
         }
     }
 
@@ -257,10 +263,10 @@ namespace Mahjong
 
     public class Fonpai : Jihai
     {
-        public static Fonpai Ton { get; } = new Fonpai("東", 10);
-        public static Fonpai Nan { get; } = new Fonpai("南", 11);
-        public static Fonpai Sha { get; } = new Fonpai("西", 12);
-        public static Fonpai Pe { get; } = new Fonpai("北", 13);
+        public static Fonpai Ton { get; } = new Fonpai("東", 1);
+        public static Fonpai Nan { get; } = new Fonpai("南", 2);
+        public static Fonpai Sha { get; } = new Fonpai("西", 3);
+        public static Fonpai Pe { get; } = new Fonpai("北", 4);
 
         public Fonpai(string name, int number) : base(name, number)
         {
@@ -268,7 +274,7 @@ namespace Mahjong
 
         public override Pai Dora
         {
-            get { return GetDora(FonpaiList.List, 10); }
+            get { return GetDora(FonpaiList.List); }
         }
     }
 
@@ -296,9 +302,9 @@ namespace Mahjong
 
     public class Sangenpai : Jihai
     {
-        public static Sangenpai Haku { get; } = new Sangenpai("白", 14);
-        public static Sangenpai Hatsu { get; } = new Sangenpai("發", 15);
-        public static Sangenpai Chun { get; } = new Sangenpai("中", 16);
+        public static Sangenpai Haku { get; } = new Sangenpai("白", 1);
+        public static Sangenpai Hatsu { get; } = new Sangenpai("發", 2);
+        public static Sangenpai Chun { get; } = new Sangenpai("中", 3);
         
         public Sangenpai(string name, int number) : base(name, number)
         {
@@ -306,7 +312,7 @@ namespace Mahjong
 
         public override Pai Dora
         {
-            get { return GetDora(SangenpaiList.List, 14); }
+            get { return GetDora(SangenpaiList.List); }
         }
     }
 

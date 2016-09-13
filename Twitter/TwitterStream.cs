@@ -34,5 +34,10 @@ namespace Twitter
         {
             Connection.Dispose();
         }
+
+        public void Reply(string text, Status destinationStatus)
+        {
+            Token.Statuses.Update($"@{destinationStatus.User.ScreenName} {text}", destinationStatus.Id);
+        }
     }
 }

@@ -107,7 +107,7 @@ namespace Mahjong
 
         public override bool Condition(Te te)
         {
-            return te.AllPais().Any(Midori.Contains);
+            return te.AllPais().All(Midori.Contains);
         }
 
         private List<Pai> Midori { get; } = new List<Pai>
@@ -598,9 +598,74 @@ namespace Mahjong
         }
     }
 
+    public class YakumanList : List<Yaku>
+    {
+        protected YakumanList()
+        {
+        }
+
+        public static YakumanList Create()
+        {
+            var lst = new YakumanList
+            {
+                new ChinRouTou(),
+                new ChuRen(),
+                new JunSeiChuRen(),
+                new RyuISou(),
+                new DaiSuShi(),
+                new SuShiHou(),
+                new TsuIiSou(),
+                new DaiSanGen(),
+                new SuAnko(),
+                new SuAnkoTanki(),
+            };
+
+            return lst;
+        }
+
+        public static YakumanList List { get; } = Create();
+    }
+
+    public class YakuList : List<Yaku>
+    {
+        protected YakuList()
+        {
+        }
+
+        public static YakuList Create()
+        {
+            var lst = new YakuList
+            {
+                new ChinItsu(),
+                new HonItsu(),
+                new JunChan(),
+                new HonChan(),
+                new ShouSangen(),
+                new SanAnko(),
+                new ToiToi(),
+                new SanShokuDouJun(),
+                new SanShokuDouKou(),
+                new Ittsu(),
+                new HonRouTou(),
+                new MenFonPai(),
+                new YakuHai(),
+                new TanYao(),
+                new PinFu(),
+                new MenzenTsumo(),
+                new RyanPeiKou(),
+                new IiPeiKou()
+            };
+
+            return lst;
+        }
+
+        public static YakuList List { get; } = Create();
+    }
+
     public abstract class DeclaredYaku : Yaku
     {
         //リーチ　一発　ダブルリーチ2　嶺上開花　海底撈月　河底撈魚
+        public abstract string[] Aliases { get; }
 
         public override bool Condition(Te te)
         {
@@ -613,6 +678,8 @@ namespace Mahjong
         public override string Name { get; } = "立直";
 
         public override int Hansu { get; } = 1;
+
+        public override string[] Aliases { get; } = {"リーチ", "立直"};
     }
 
     public class Ippatsu : DeclaredYaku
@@ -620,6 +687,8 @@ namespace Mahjong
         public override string Name { get; } = "一発";
 
         public override int Hansu { get; } = 1;
+
+        public override string[] Aliases { get; } = { "一発", "イッパツ" };
     }
 
     public class RinShanKaiHou : DeclaredYaku
@@ -627,6 +696,8 @@ namespace Mahjong
         public override string Name { get; } = "嶺上開花";
 
         public override int Hansu { get; } = 1;
+
+        public override string[] Aliases { get; } = { "嶺上開花" };
     }
 
     public class KaiTei : DeclaredYaku
@@ -634,6 +705,8 @@ namespace Mahjong
         public override string Name { get; } = "海底撈月";
 
         public override int Hansu { get; } = 1;
+
+        public override string[] Aliases { get; } = { "海底撈月", "カイテイ" };
     }
 
     public class HouTei : DeclaredYaku
@@ -641,6 +714,8 @@ namespace Mahjong
         public override string Name { get; } = "河底撈魚";
 
         public override int Hansu { get; } = 1;
+
+        public override string[] Aliases { get; } = { "河底撈魚", "ホウテイ" };
     }
 
     public class DoubleRiichi : DeclaredYaku
@@ -648,6 +723,8 @@ namespace Mahjong
         public override string Name { get; } = "ダブル立直";
 
         public override int Hansu { get; } = 2;
+
+        public override string[] Aliases { get; } = { "ダブルリーチ", "ダブル立直" };
     }
 
 }
