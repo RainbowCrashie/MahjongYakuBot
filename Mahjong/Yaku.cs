@@ -342,7 +342,7 @@ namespace Mahjong
             
             //At this point .Count() == 4 is rejected by condition: !SuAnko
             if (!te.Tsumo)
-                if (!(te.Janto.Contains(te.AgariPai) ||
+                if (!(!te.Janto.Contains(te.AgariPai) ||
                     (te.Shuntsus[0].Kui && te.Shuntsus[0].Pais.Contains(te.AgariPai))))
                     return false;
 

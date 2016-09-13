@@ -5,6 +5,11 @@ namespace Mahjong
 {
     public static class Gates
     {
+        public static bool IsJuntsu(List<Pai> pais)
+        {
+            return IsJuntsu(pais[0], pais[1], pais[2]);
+        }
+
         public static bool IsJuntsu(Pai pai1, Pai pai2, Pai pai3)
         {
             if (!(pai1 is Supai))
@@ -31,6 +36,11 @@ namespace Mahjong
             return true;
         }
 
+        public static bool IsKoutsu(List<Pai> pais)
+        {
+            return IsKoutsu(pais[0], pais[1], pais[2]);
+        }
+
         public static bool IsKoutsu(Pai pai1, Pai pai2, Pai pai3)
         {
             if (pai1 != pai2)
@@ -42,12 +52,22 @@ namespace Mahjong
             return true;
         }
 
+        public static bool IsToitsu(List<Pai> pais)
+        {
+            return IsToitsu(pais[0], pais[1]);
+        }
+
         public static bool IsToitsu(Pai pai1, Pai pai2)
         {
             if (pai1 != pai2)
                 return false;
 
             return true;
+        }
+
+        public static bool IsKantsu(List<Pai> pais)
+        {
+            return IsKantsu(pais[0], pais[1], pais[2], pais[3]);
         }
 
         public static bool IsKantsu(Pai pai1, Pai pai2, Pai pai3, Pai pai4)

@@ -129,6 +129,24 @@ namespace Mahjong.Tests
         }
 
         [TestMethod]
+        public void TeIs三暗刻()
+        {
+            var te = new Te();
+            te.Janto = new List<Pai> { Souzu.Eight, Souzu.Eight };
+            te.Kotsus.Add(new Mentsu(Manzu.Two, Manzu.Two, Manzu.Two));
+            te.Kotsus.Add(new Mentsu(Pinzu.Nine, Pinzu.Nine, Pinzu.Nine));
+            te.Kotsus.Add(new Mentsu(Manzu.Eight, Manzu.Eight, Manzu.Eight));
+            te.Shuntsus.Add(new Mentsu(Manzu.Six, Manzu.Seven, Manzu.Eight));
+            te.AgariPai = Souzu.Eight;
+            te.Tsumo = true;
+
+            Assert.AreEqual(new SanAnko().Condition(te), true);
+            
+            te.Shuntsus.Clear();
+            te.Kotsus.Add(new Mentsu(Manzu.Three, Manzu.Three, Manzu.Three, null, true));
+        }
+
+        [TestMethod]
         public void TeIs三色同刻()
         {
             var te = new Te();

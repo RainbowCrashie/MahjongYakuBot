@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Mahjong;
@@ -9,11 +10,14 @@ namespace MahjongYakuBot
     public class TextPaiAnalizer
     {
         private static readonly char[] PaiSplitterChars = {' ', '　'};
-        private static readonly string BaFuPattern = "(?<bafu>.)場";
-        private static readonly string JiFuPattern = "(?<jifu>.)家";
-        private static readonly string AgariPaiPattern = "((?<agari>ロン|ツモ)(?<agaripai>.+))";
-        private static readonly string DoraPattern = "ドラ(?<dora>.+)";
-        
+        private const string BaFuPattern = @"(?<bafu>.)場";
+        private const string JiFuPattern = @"(?<jifu>.)家";
+        private const string AgariPaiPattern = @"((?<agari>ロン|ツモ)(?<agaripai>.+))";
+        private const string DoraPattern = @"ドラ(?<dora>.+)";
+
+        private const string NakiMentsuPattern = @"\((?<pais>.+?)\)";
+        private const string AnKanPattern = @"\[(?<pais>.+?)\]";
+
         private static readonly DeclaredYaku[] DeclaredYakus =
         {
             new Riichi(), new Ippatsu(), new RinShanKaiHou(),
@@ -47,9 +51,35 @@ namespace MahjongYakuBot
 
             tweet = Regex.Replace(tweet, AgariPaiPattern, "");
             tweet = Regex.Replace(tweet, DoraPattern, "");
+            
+            foreach (Match naki in Regex.Matches(tweet, NakiMentsuPattern))
+            {
+                var pais = naki.Groups["pais"].Value.Split(PaiSplitterChars).Select(DeterminePai).ToList();
 
-            //鳴き抽出処理(ぽん明カンちー)[暗カン]
+                if (Gates.IsJuntsu(pais))
+                    ret.Te.Shuntsus.Add(new Mentsu(pais, true));
 
+                if (pais.Count == 4)
+                {
+                    if (Gates.IsKantsu(pais))
+                        ret.Te.Kotsus.Add(new Mentsu(pais, true));
+                }
+                else
+                {
+                    if (Gates.IsKoutsu(pais))
+                        ret.Te.Kotsus.Add(new Mentsu(pais, true));
+                }
+            }
+            tweet = Regex.Replace(tweet, NakiMentsuPattern, "");
+
+            foreach (Match ankan in Regex.Matches(tweet, AnKanPattern))
+            {
+                var pais = ankan.Groups["pais"].Value.Split(PaiSplitterChars).Select(DeterminePai).ToList();
+                if (Gates.IsKantsu(pais))
+                    ret.Te.Kotsus.Add(new Mentsu(pais));
+            }
+            tweet = Regex.Replace(tweet, AnKanPattern, "");
+            
             ret.UnsortedPais = tweet.Split(PaiSplitterChars).Select(DeterminePai).ToList();
 
             ret.UnsortedPais.RemoveAll(pai => pai == null);
@@ -61,12 +91,9 @@ namespace MahjongYakuBot
 
         public static Pai DeterminePai(string rawpai)
         {
-            if (rawpai == "")
-                return null;
-
             PaiAliasList.List.ForEach(als => als.Aliases.ToList().ForEach(al => rawpai = rawpai.Replace(al, als.Ideal)));
 
-            return AllPaiList.List.First(pai => rawpai.Contains(pai.Text));
+            return AllPaiList.List.FirstOrDefault(pai => rawpai.Contains(pai.Text));
         }
     }
 
