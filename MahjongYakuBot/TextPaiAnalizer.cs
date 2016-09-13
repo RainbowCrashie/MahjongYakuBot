@@ -13,8 +13,8 @@ namespace MahjongYakuBot
         private const string AgariPaiPattern = @"((?<agari>ロン|ツモ)(?<agaripai>.+))";
         private const string DoraPattern = @"ドラ(?<dora>.+)";
 
-        private const string NakiMentsuPattern = @"\((?<pais>.+?)\)";
-        private const string AnKanPattern = @"\[(?<pais>.+?)\]";
+        private const string NakiMentsuPattern = @"[(（](?<pais>.+?)[)）]";
+        private const string AnKanPattern = @"[[「](?<pais>.+?)[]」]";
 
         private static readonly DeclaredYaku[] DeclaredYakus =
         {
