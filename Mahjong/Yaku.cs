@@ -399,16 +399,17 @@ namespace Mahjong
                     te.Shuntsus.Where(shuntsu => shuntsu.Pais.Min().Number == sampleKotsu.Pais.Min().Number).ToList();
 
                 if (!douShuns.Any(shuntsu => shuntsu.Pais[0] is Manzu))
-                    return false;
+                    continue;
 
                 if (!douShuns.Any(shuntsu => shuntsu.Pais[0] is Pinzu))
-                    return false;
+                    continue;
 
                 if (!douShuns.Any(shuntsu => shuntsu.Pais[0] is Souzu))
-                    return false;
-            }
+                    continue;
 
-            return true;
+                return true;
+            }
+            return false;
         }
     }
 

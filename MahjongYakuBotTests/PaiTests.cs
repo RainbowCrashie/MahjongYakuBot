@@ -162,6 +162,21 @@ namespace Mahjong.Tests
         }
 
         [TestMethod]
+        public void TeIs三色同順()
+        {
+            var te = new Te();
+            te.Janto = new List<Pai> { Manzu.Eight, Manzu.Eight };
+            te.Shuntsus.Add(new Mentsu(Manzu.One, Manzu.Two, Manzu.Three));
+            te.Shuntsus.Add(new Mentsu(Souzu.One, Souzu.Two, Souzu.Three));
+            te.Shuntsus.Add(new Mentsu(Pinzu.One, Pinzu.Two, Pinzu.Three));
+            te.Shuntsus.Add(new Mentsu(Manzu.Seven, Manzu.Eight, Manzu.Nine));
+            te.AgariPai = Manzu.One;
+            te.Tsumo = true;
+
+            Assert.AreEqual(new SanShokuDouJun().Condition(te), true);
+        }
+
+        [TestMethod]
         public void TeIs一気通貫()
         {
             var te = new Te();

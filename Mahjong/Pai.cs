@@ -51,7 +51,12 @@ namespace Mahjong
         }
 
         public bool IsChunChanPai()
-            => !IsRouTouPai();
+        {
+            if (this is Jihai)
+                return false;
+
+            return !IsRouTouPai();
+        }
     }
 
     public abstract class PaiList : List<Pai>
