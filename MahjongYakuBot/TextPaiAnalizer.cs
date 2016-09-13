@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Mahjong;
@@ -123,7 +121,7 @@ namespace MahjongYakuBot
         public static PaiAlias Man { get; } = new PaiAlias("萬", new[] { "ワン", "マン" });
 
         public static PaiAlias Haku { get; } = new PaiAlias("白", new[] { "ハク" });
-        public static PaiAlias Hatsu { get; } = new PaiAlias("發", new[] { "ハツ" });
+        public static PaiAlias Hatsu { get; } = new PaiAlias("發", new[] { "ハツ", "発" });
         public static PaiAlias Chun { get; } = new PaiAlias("中", new[] { "チュン" });
     }
 

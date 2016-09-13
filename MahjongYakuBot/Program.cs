@@ -9,6 +9,8 @@ namespace MahjongYakuBot
     {
         static void Main(string[] args)
         {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+
             TwitterStream.Instance.Streamer.OfType<StatusMessage>().Select(s => s.Status).Where(st => st.Text.Contains("@MahjongYaku"))
                 .Subscribe(YakuRequestHandler.Compute);
 
