@@ -33,6 +33,21 @@ namespace MahjongYakuBot
                     text = text + $"{yaku.Name} ";
                 }
 
+                var doraCount = 0;
+                foreach (var pai in pail.Te.Doras)
+                {
+                    doraCount += pail.Te.AllPais().Count(p => p == pai.Dora);
+                }
+
+                if (doraCount == 1)
+                    text = text + "ドラ ";
+
+                if (doraCount == 2)
+                    text = text + "ドラドラ ";
+
+                if (doraCount >= 3)
+                    text = text + $"ドラ{doraCount}";
+
                 TwitterStream.Instance.Reply(text, tweet);
             }
             catch (Exception exc)

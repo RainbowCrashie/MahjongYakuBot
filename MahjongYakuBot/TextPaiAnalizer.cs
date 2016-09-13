@@ -47,6 +47,8 @@ namespace MahjongYakuBot
                 .Split(PaiSplitterChars)
                 .Select(DeterminePai).ToList();
 
+            ret.Te.Doras.RemoveAll(pai => pai == null);
+
             tweet = Regex.Replace(tweet, AgariPaiPattern, "");
             tweet = Regex.Replace(tweet, DoraPattern, "");
             
