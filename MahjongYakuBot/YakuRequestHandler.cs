@@ -26,18 +26,10 @@ namespace MahjongYakuBot
 
                 pail.Yakus.ForEach(yaku => Console.WriteLine(yaku.Name));
 
-                var text = "";
 
-                foreach (var yaku in pail.Yakus)
-                {
-                    text = text + $"{yaku.Name} ";
-                }
+                var text = string.Join(" ", pail.Yakus.Select(y => y.Name));
 
-                var doraCount = 0;
-                foreach (var pai in pail.Te.Doras)
-                {
-                    doraCount += pail.Te.AllPais().Count(p => p == pai.Dora);
-                }
+                var doraCount = ScoreCalculator.CountDoras(pail.Te);
 
                 if (doraCount == 1)
                     text = text + "ドラ ";
@@ -52,7 +44,6 @@ namespace MahjongYakuBot
             }
             catch (Exception exc)
             {
-                
             }
         }
     }
