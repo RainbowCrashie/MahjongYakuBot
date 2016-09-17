@@ -242,5 +242,10 @@ namespace Mahjong
             : this(new List<Pai> {pai1, pai2, pai3, pai4}, kui)
         {
         }
+
+        public override string ToString()
+        {
+            return $"{string.Join(" ", Pais.Select(pai => pai.Text))}, {(Kui ? "喰い" : "")}";
+        }
     }
 }

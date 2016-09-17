@@ -57,6 +57,11 @@ namespace Mahjong
 
             return !IsRouTouPai();
         }
+
+        public override string ToString()
+        {
+            return Text;
+        }
     }
 
     public abstract class PaiList : List<Pai>

@@ -30,6 +30,11 @@ namespace Mahjong
         {
             return te.Kotsus.Any(kotsu => kotsu.Pais[0] == pai);
         }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 
     public abstract class Yakuman : Yaku
