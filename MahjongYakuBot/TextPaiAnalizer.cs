@@ -16,22 +16,22 @@ namespace MahjongYakuBot
         private const string NakiMentsuPattern = @"[(（](?<pais>.+?)[)）]";
         private const string AnKanPattern = @"[[「](?<pais>.+?)[]」]";
 
-        private static readonly DeclaredYaku[] DeclaredYakus =
+        private static readonly DeclaredYaku[] DeclaringYakus =
         {
             new Riichi(), new Ippatsu(), new RinShanKaiHou(),
             new KaiTei(), new HouTei(), new RinShanKaiHou()
         };
 
-        public static AnalizingReturningType Analize(string tweet)
+        public static AnalizedTeData Analize(string tweet)
         {
             //宣言系(削除)→場風(削除)→自風(削除)→上がり牌→ドラ→(2つ削除)
 
             tweet = tweet.Replace("@MahjongYaku", "");
 
-            var ret = new AnalizingReturningType();
+            var ret = new AnalizedTeData();
 
-            ret.Yakus = DeclaredYakus.Where(yaku => yaku.Aliases.Any(tweet.Contains)).Select(y => y as Yaku).ToList();
-            DeclaredYakus.SelectMany(yaku => yaku.Aliases).ToList().ForEach(alias => tweet = tweet.Replace(alias, ""));
+            ret.PredeclaredYakus = DeclaringYakus.Where(yaku => yaku.Aliases.Any(tweet.Contains));
+            DeclaringYakus.SelectMany(yaku => yaku.Aliases).ToList().ForEach(alias => tweet = tweet.Replace(alias, ""));
             
             ret.Te.BaFu = DeterminePai(Regex.Match(tweet, BaFuPattern).Groups["bafu"].Value) as Fonpai;
             tweet = Regex.Replace(tweet, BaFuPattern, "");
@@ -160,10 +160,10 @@ namespace MahjongYakuBot
         public static PaiAliasList List { get; } = Create();
     }
 
-    public class AnalizingReturningType
+    public class AnalizedTeData
     {
         public Te Te { get; set; } = new Te();
-        public List<Yaku> Yakus { get; set; } = new List<Yaku>();
+        public IEnumerable<DeclaredYaku> PredeclaredYakus { get; set; } = new List<DeclaredYaku>();
         public List<Pai> UnsortedPais { get; set; }   = new List<Pai>();
     }
 }

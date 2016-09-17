@@ -46,7 +46,7 @@ namespace Mahjong
         {
             if (this is Jihai)
                 return false;
-
+            
             return Number == 1 || Number == 9;
         }
 

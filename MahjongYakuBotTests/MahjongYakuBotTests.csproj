@@ -53,8 +53,8 @@
   <ItemGroup>
     <Compile Include="PaiTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ScoreCalculatorTests.cs" />
     <Compile Include="TextPaiAnalizerTests.cs" />
+    <Compile Include="WinResultTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MahjongYakuBot\MahjongYakuBot.csproj">

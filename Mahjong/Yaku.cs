@@ -13,7 +13,7 @@ namespace Mahjong
 
         public abstract int Hansu { get; }
 
-        public bool KuiSagari { get; } = false;
+        public abstract bool KuiSagari { get; }
 
         public static readonly int Yakuman = 100;
 
@@ -31,12 +31,19 @@ namespace Mahjong
             return te.Kotsus.Any(kotsu => kotsu.Pais[0] == pai);
         }
     }
+
+    public abstract class Yakuman : Yaku
+    {
+        public override bool KuiSagari { get; } = false;
+    }
     
     public class ChinRouTou : Yaku
     {
         public override string Name { get; } = "清老頭";
 
         public override int Hansu { get; } = Yakuman;
+        
+        public override bool KuiSagari { get; } = false;
 
         public override bool Condition(Te te)
         {
@@ -44,7 +51,7 @@ namespace Mahjong
         }
     }
 
-    public abstract class ChuRenBase : Yaku
+    public abstract class ChuRenBase : Yakuman
     {
         protected bool CheckTe(Te te)
         {
@@ -99,7 +106,7 @@ namespace Mahjong
         }
     }
 
-    public class RyuISou : Yaku
+    public class RyuISou : Yakuman
     {
         public override string Name { get; } = "緑一色";
 
@@ -121,7 +128,7 @@ namespace Mahjong
         };
     }
 
-    public class DaiSuShi : Yaku
+    public class DaiSuShi : Yakuman
     {
         public override string Name { get; } = "大四喜";
 
@@ -133,7 +140,7 @@ namespace Mahjong
         }
     }
 
-    public class SuShiHou : Yaku
+    public class SuShiHou : Yakuman
     {
         public override string Name { get; } = "四喜和";
 
@@ -153,7 +160,7 @@ namespace Mahjong
         }
     }
 
-    public class TsuIiSou : Yaku
+    public class TsuIiSou : Yakuman
     {
         public override string Name { get; } = "字一色";
 
@@ -165,7 +172,7 @@ namespace Mahjong
         }
     }
 
-    public class DaiSanGen : Yaku
+    public class DaiSanGen : Yakuman
     {
         public override string Name { get; } = "大三元";
 
@@ -177,7 +184,7 @@ namespace Mahjong
         }
     }
 
-    public class SuAnko : Yaku
+    public class SuAnko : Yakuman
     {
         public override string Name { get; } = "四暗刻";
 
@@ -188,7 +195,7 @@ namespace Mahjong
             if (new SuAnkoTanki().Condition(te))
                 return false;
 
-            if (!te.IsMenzen())
+            if (!te.IsMenzen)
                 return false;
 
             if (te.Kotsus.Count != 4)
@@ -204,7 +211,7 @@ namespace Mahjong
         }
     }
 
-    public class SuAnkoTanki : Yaku
+    public class SuAnkoTanki : Yakuman
     {
         public override string Name { get; } = "四暗刻単騎待ち";
 
@@ -212,7 +219,7 @@ namespace Mahjong
 
         public override bool Condition(Te te)
         {
-            if (!te.IsMenzen())
+            if (!te.IsMenzen)
                 return false;
 
             if (te.Kotsus.Count != 4)
@@ -231,6 +238,8 @@ namespace Mahjong
 
         public override int Hansu { get; } = 6;
 
+        public override bool KuiSagari { get; } = false;
+
         public override bool Condition(Te te)
         {
             if (ContainsJihai(te))
@@ -245,6 +254,8 @@ namespace Mahjong
         public override string Name { get; } = "混一色";
 
         public override int Hansu { get; } = 3;
+
+        public override bool KuiSagari { get; } = true;
 
         public override bool Condition(Te te)
         {
@@ -262,11 +273,12 @@ namespace Mahjong
         protected bool CheckSupai(Te te)
         {
             //Tolerating Jihais are valid even for JunChan as far as JunChan rejects te contains Jihai.
-            if (!te.Janto[0].IsRouTouPai() || !(te.Janto[0] is Jihai))
+            if (!te.Janto[0].IsRouTouPai() && !(te.Janto[0] is Jihai))
                 return false;
 
-            if (te.Kotsus.Select(k => k.Pais[0]).All(pai => pai.IsRouTouPai() || pai is Jihai))
-                return false;
+            if (te.Kotsus.Count > 0)
+                if (!te.Kotsus.Select(k => k.Pais[0]).All(pai => pai.IsRouTouPai() || pai is Jihai))
+                    return false;
 
             if (te.Shuntsus.All(shuntsu => !shuntsu.Pais.Any(pai => pai.IsRouTouPai())))
                 return false;
@@ -280,6 +292,8 @@ namespace Mahjong
         public override string Name { get; } = "純全帯么九";
 
         public override int Hansu { get; } = 3;
+
+        public override bool KuiSagari { get; } = false;
 
         public override bool Condition(Te te)
         {
@@ -295,6 +309,8 @@ namespace Mahjong
         public override string Name { get; } = "混全帯么九";
 
         public override int Hansu { get; } = 2;
+
+        public override bool KuiSagari { get; } = false;
 
         public override bool Condition(Te te)
         {
@@ -314,6 +330,8 @@ namespace Mahjong
 
         public override int Hansu { get; } = 2;
 
+        public override bool KuiSagari { get; } = false;
+
         public override bool Condition(Te te)
         {
             if (!(te.Janto[0] is Sangenpai))
@@ -328,6 +346,8 @@ namespace Mahjong
         public override string Name { get; } = "三暗刻";
 
         public override int Hansu { get; } = 2;
+
+        public override bool KuiSagari { get; } = false;
 
         public override bool Condition(Te te)
         {
@@ -356,6 +376,8 @@ namespace Mahjong
 
         public override int Hansu { get; } = 2;
 
+        public override bool KuiSagari { get; } = false;
+
         public override bool Condition(Te te)
         {
             return (te.Kotsus.Count == 4);
@@ -367,6 +389,8 @@ namespace Mahjong
         public override string Name { get; } = "三色同刻";
 
         public override int Hansu { get; } = 2;
+
+        public override bool KuiSagari { get; } = false;
 
         public override bool Condition(Te te)
         {
@@ -386,7 +410,7 @@ namespace Mahjong
 
         public override int Hansu { get; } = 2;
 
-        public new bool KuiSagari { get; } = true;
+        public override bool KuiSagari { get; } = true;
 
         public override bool Condition(Te te)
         {
@@ -419,21 +443,21 @@ namespace Mahjong
 
         public override int Hansu { get; } = 2;
 
-        public new bool KuiSagari { get; } = true;
+        public override bool KuiSagari { get; } = true;
 
         public override bool Condition(Te te)
         {
             if (te.Shuntsus.Count < 3)
                 return false;
 
-            var shuntsus =
-                te.Shuntsus.Select(s => s.Pais.Min())
-                    .Where(shuntsu => shuntsu.Number == 1 || shuntsu.Number == 4 || shuntsu.Number == 7)
-                    .ToList();
+            var shuntsus = te.Shuntsus.Select(s => s.Pais.Min()).ToList();
 
-            return shuntsus.Any(sampleShuntsu =>
-                shuntsus.Where(shuntsu => shuntsu.GetType() == sampleShuntsu.GetType()).ToList().Count == 3
-                );
+            //同色が3つあるものを取り出す
+            var sameColourShuntsus =
+                shuntsus.Where(sample => shuntsus.Count(shun => Gates.IsSameType(sample, shun)) >= 3).Select(s => s.Number).ToList();
+
+            return sameColourShuntsus.Contains(1) && sameColourShuntsus.Contains(4) &&
+                   sameColourShuntsus.Contains(7);
         }
     }
 
@@ -442,6 +466,8 @@ namespace Mahjong
         public override string Name { get; } = "混老頭";
 
         public override int Hansu { get; } = 2;
+
+        public override bool KuiSagari { get; } = false;
 
         public override bool Condition(Te te)
         {
@@ -455,6 +481,8 @@ namespace Mahjong
 
         public override int Hansu { get; } = 1;
 
+        public override bool KuiSagari { get; } = false;
+
         public override bool Condition(Te te)
         {
             return HazSpecificKotsu(te, te.JiFu);
@@ -467,6 +495,8 @@ namespace Mahjong
 
         public override int Hansu { get; } = 1;
 
+        public override bool KuiSagari { get; } = false;
+
         public override bool Condition(Te te)
         {
             return HazSpecificKotsu(te, te.BaFu);
@@ -478,6 +508,8 @@ namespace Mahjong
         public override string Name { get; } = "三元牌";
 
         public override int Hansu { get; } = 1;
+
+        public override bool KuiSagari { get; } = false;
 
         public override bool Condition(Te te)
         {
@@ -494,6 +526,8 @@ namespace Mahjong
 
         public override int Hansu { get; } = 1;
 
+        public override bool KuiSagari { get; } = false;
+
         public override bool Condition(Te te)
         {
             return te.AllPais().All(pai => pai.IsChunChanPai());
@@ -506,9 +540,11 @@ namespace Mahjong
 
         public override int Hansu { get; } = 1;
 
+        public override bool KuiSagari { get; } = false;
+
         public override bool Condition(Te te)
         {
-            if (!te.IsMenzen())
+            if (!te.IsMenzen)
                 return false;
 
             if (te.Janto[0] is Sangenpai)
@@ -536,9 +572,11 @@ namespace Mahjong
 
         public override int Hansu { get; } = 1;
 
+        public override bool KuiSagari { get; } = false;
+
         public override bool Condition(Te te)
         {
-            if (!te.IsMenzen())
+            if (!te.IsMenzen)
                 return false;
 
             return te.Tsumo;
@@ -551,9 +589,11 @@ namespace Mahjong
 
         public override int Hansu { get; } = 3;
 
+        public override bool KuiSagari { get; } = false;
+
         public override bool Condition(Te te)
         {
-            if (!te.IsMenzen())
+            if (!te.IsMenzen)
                 return false;
 
             if (te.Shuntsus.Count != 4)
@@ -577,11 +617,13 @@ namespace Mahjong
     {
         public override string Name { get; } = "一盃口";
 
-        public override int Hansu { get; } = 3;
+        public override int Hansu { get; } = 1;
+
+        public override bool KuiSagari { get; } = false;
 
         public override bool Condition(Te te)
         {
-            if (!te.IsMenzen())
+            if (!te.IsMenzen)
                 return false;
 
             if (te.Shuntsus.Count < 2)
@@ -592,10 +634,21 @@ namespace Mahjong
 
             var shuntsuPool = te.Shuntsus.Select(s => s.Pais.Min()).ToList();
 
-            var sampleShuntsu = shuntsuPool[0];
-            shuntsuPool.RemoveAt(0);
+            return shuntsuPool.Any(sample => shuntsuPool.Contains(sample));
+        }
+    }
 
-            return shuntsuPool.Contains(sampleShuntsu);
+    public class ChiToiTsu : Yaku
+    {
+        public override string Name { get; } = "七対子";
+
+        public override int Hansu { get; } = 1;
+
+        public override bool KuiSagari { get; } = false;
+
+        public override bool Condition(Te te)
+        {
+            throw new System.NotImplementedException();
         }
     }
 
@@ -680,6 +733,8 @@ namespace Mahjong
 
         public override int Hansu { get; } = 1;
 
+        public override bool KuiSagari { get; } = false;
+
         public override string[] Aliases { get; } = {"リーチ", "立直"};
     }
 
@@ -688,6 +743,8 @@ namespace Mahjong
         public override string Name { get; } = "一発";
 
         public override int Hansu { get; } = 1;
+
+        public override bool KuiSagari { get; } = false;
 
         public override string[] Aliases { get; } = { "一発", "イッパツ" };
     }
@@ -698,6 +755,8 @@ namespace Mahjong
 
         public override int Hansu { get; } = 1;
 
+        public override bool KuiSagari { get; } = false;
+
         public override string[] Aliases { get; } = { "嶺上開花" };
     }
 
@@ -706,6 +765,8 @@ namespace Mahjong
         public override string Name { get; } = "海底撈月";
 
         public override int Hansu { get; } = 1;
+
+        public override bool KuiSagari { get; } = false;
 
         public override string[] Aliases { get; } = { "海底撈月", "カイテイ" };
     }
@@ -716,6 +777,8 @@ namespace Mahjong
 
         public override int Hansu { get; } = 1;
 
+        public override bool KuiSagari { get; } = false;
+
         public override string[] Aliases { get; } = { "河底撈魚", "ホウテイ" };
     }
 
@@ -724,6 +787,8 @@ namespace Mahjong
         public override string Name { get; } = "ダブル立直";
 
         public override int Hansu { get; } = 2;
+
+        public override bool KuiSagari { get; } = false;
 
         public override string[] Aliases { get; } = { "ダブルリーチ", "ダブル立直" };
     }

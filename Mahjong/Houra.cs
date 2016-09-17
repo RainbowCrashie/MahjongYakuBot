@@ -6,24 +6,6 @@ namespace Mahjong
 {
     public class Houra
     {
-        public static List<Yaku> CountYaku(Te te)
-        {
-            var yakumans = new List<Yaku>();
-            yakumans.AddRange(YakumanList.List);
-
-            yakumans.RemoveAll(yaku => !yaku.Condition(te));
-
-            if (yakumans.Count > 0)
-                return yakumans;
-
-            var yakus = new List<Yaku>();
-            yakus.AddRange(YakuList.List);
-
-            yakus.RemoveAll(yaku => !yaku.Condition(te));
-
-            return yakus;
-        }
-
         private static readonly int[] Zeros = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
         private static int[] Analyze(List<Pai> pais)
@@ -181,6 +163,7 @@ namespace Mahjong
         public List<Mentsu> Kotsus { get; set; }
         public List<Mentsu> Shuntsus { get; set; }
         public List<Pai> Janto { get; set; }
+
         public Pai AgariPai { get; set; }
         public bool Tsumo { get; set; }
 
@@ -217,19 +200,25 @@ namespace Mahjong
             return pais;
         }
 
-        public void AddMentsus(Te te)
+        public void MergeMentsus(Te te)
         {
+            if (te == null)
+                return;
+
             Janto = te.Janto;
             Shuntsus.AddRange(te.Shuntsus);
             Kotsus.AddRange(te.Kotsus);
         }
 
-        public bool IsMenzen()
+        public bool IsMenzen
         {
-            if (Shuntsus.Any(shuntsu => shuntsu.Kui))
-                return false;
+            get
+            {
+                if (Shuntsus.Any(shuntsu => shuntsu.Kui))
+                    return false;
 
-            return !Kotsus.Any(kotsu => kotsu.Kui);
+                return !Kotsus.Any(kotsu => kotsu.Kui);
+            }
         }
     }
 

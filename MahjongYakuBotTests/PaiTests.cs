@@ -215,6 +215,21 @@ namespace Mahjong.Tests
         }
 
         [TestMethod]
+        public void TeIs一盃口()
+        {
+            var te = new Te();
+            te.Janto = new List<Pai> { Souzu.One, Souzu.One };
+            te.Shuntsus.Add(new Mentsu(Pinzu.One, Pinzu.Two, Pinzu.Three));
+            te.Shuntsus.Add(new Mentsu(Pinzu.One, Pinzu.Two, Pinzu.Three));
+            te.Shuntsus.Add(new Mentsu(Pinzu.One, Pinzu.Two, Pinzu.Three));
+            te.Shuntsus.Add(new Mentsu(Manzu.Seven, Manzu.Eight, Manzu.Nine));
+            te.AgariPai = Souzu.One;
+            te.Tsumo = true;
+
+            Assert.AreEqual(new IiPeiKou().Condition(te), true);
+        }
+
+        [TestMethod]
         public void TeIs九蓮宝燈()
         {
             var te = new Te();

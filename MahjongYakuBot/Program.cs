@@ -13,7 +13,11 @@ namespace MahjongYakuBot
 
             TwitterStream.Instance.Streamer.OfType<StatusMessage>().Select(s => s.Status).Where(st => st.Text.Contains("@MahjongYaku"))
                 .Subscribe(YakuRequestHandler.Compute);
-            
+
+#if DEBUG
+            Debugging.Test();
+#endif
+
             Console.ReadLine();
         }
     }

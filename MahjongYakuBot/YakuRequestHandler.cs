@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using CoreTweet;
 using Mahjong;
 using Twitter;
@@ -14,33 +13,9 @@ namespace MahjongYakuBot
             {
                 var pail = TextPaiAnalizer.Analize(tweet.Text);
 
-                var sorted = Houra.BackTrack(pail.UnsortedPais);
+                var scoring = WinResult.GetWinResult(pail.UnsortedPais, pail.Te, pail.PredeclaredYakus);
 
-                //sorted contains nothing then noten
-
-                pail.Te.AddMentsus(sorted[0]);
-
-                var yakus = Houra.CountYaku(pail.Te);
-
-                pail.Yakus.AddRange(yakus);
-
-                pail.Yakus.ForEach(yaku => Console.WriteLine(yaku.Name));
-
-
-                var text = string.Join(" ", pail.Yakus.Select(y => y.Name));
-
-                var doraCount = ScoreCalculator.CountDoras(pail.Te);
-
-                if (doraCount == 1)
-                    text = text + "ドラ ";
-
-                if (doraCount == 2)
-                    text = text + "ドラドラ ";
-
-                if (doraCount >= 3)
-                    text = text + $"ドラ{doraCount}";
-
-                TwitterStream.Instance.Reply(text, tweet);
+                TwitterStream.Instance.Reply(scoring.ToString(), tweet);
             }
             catch (Exception exc)
             {
