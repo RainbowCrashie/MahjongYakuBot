@@ -17,7 +17,6 @@ namespace MahjongYakuBot
             };
 
             var a = WinResult.GetWinResult(tepai);
-            ;
         }
     }
 }

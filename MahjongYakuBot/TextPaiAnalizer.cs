@@ -30,7 +30,8 @@ namespace MahjongYakuBot
 
             var ret = new AnalizedTeData();
 
-            ret.PredeclaredYakus = DeclaringYakus.Where(yaku => yaku.Aliases.Any(tweet.Contains));
+            ret.PredeclaredYakus = DeclaringYakus.Where(yaku => yaku.Aliases.Any(tweet.Contains))
+                as IReadOnlyCollection<DeclaredYaku>;
             DeclaringYakus.SelectMany(yaku => yaku.Aliases).ToList().ForEach(alias => tweet = tweet.Replace(alias, ""));
             
             ret.Te.BaFu = DeterminePai(Regex.Match(tweet, BaFuPattern).Groups["bafu"].Value) as Fonpai;
@@ -163,7 +164,7 @@ namespace MahjongYakuBot
     public class AnalizedTeData
     {
         public Te Te { get; set; } = new Te();
-        public IEnumerable<DeclaredYaku> PredeclaredYakus { get; set; } = new List<DeclaredYaku>();
-        public List<Pai> UnsortedPais { get; set; }   = new List<Pai>();
+        public IReadOnlyCollection<DeclaredYaku> PredeclaredYakus { get; set; }
+        public List<Pai> UnsortedPais { get; set; } = new List<Pai>();
     }
 }

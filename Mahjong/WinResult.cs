@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Mime;
-using System.Runtime.Remoting.Messaging;
 
 namespace Mahjong
 {
@@ -144,7 +142,7 @@ namespace Mahjong
         #endregion
 
         #region ctors
-        public WinResult(Te te, IEnumerable<DeclaredYaku> preDeclaredYakus = null)
+        public WinResult(Te te, IReadOnlyCollection<DeclaredYaku> preDeclaredYakus = null)
         {
             Te = te;
 
@@ -167,7 +165,7 @@ namespace Mahjong
             PointWithManganData = CalculatePoints(FuSu, HanSu, IsDealer);
         }
 
-        public static WinResult GetWinResult(Te te, IEnumerable<DeclaredYaku> preDeclaredYakus = null)
+        public static WinResult GetWinResult(Te te, IReadOnlyCollection<DeclaredYaku> preDeclaredYakus = null)
         {
             return new WinResult(te, preDeclaredYakus);
         }
@@ -176,7 +174,7 @@ namespace Mahjong
         /// Returns 
         /// </summary>
         public static WinResult GetWinResult(List<Pai> unsortedPais, Te preAnalizedMentsus = null,
-            IEnumerable<DeclaredYaku> preDeclaredYakus = null)
+            IReadOnlyCollection<DeclaredYaku> preDeclaredYakus = null)
         {
             var backTracked = Houra.BackTrack(unsortedPais);
 
