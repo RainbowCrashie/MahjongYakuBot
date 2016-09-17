@@ -23,7 +23,7 @@ namespace Mahjong
 
         protected bool ContainsJihai(Te te)
         {
-            return (te.AllPais().Any(pai => pai is Jihai));
+            return te.AllPais().Any(pai => pai is Jihai);
         }
 
         protected bool HazSpecificKotsu(Te te, Pai pai)
